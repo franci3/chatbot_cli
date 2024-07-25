@@ -9,6 +9,7 @@ environment:
 # Add regular dependencies here.
 dependencies:
   args: ^2.5.0
+  cli_util: ^0.4.1
   dotenv: ^4.2.0
   google_gemini: ^0.1.2
   # path: ^1.8.0
