@@ -1,6 +1,7 @@
 name: chatbot_cli
 description: A sample command-line application.
 version: 1.0.0
+publish_to: none
 # repository: https://github.com/my_org/my_repo
 
 environment:
@@ -8,12 +9,17 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  args: ^2.5.0
-  cli_util: ^0.4.1
+  args: ^2.7.0
+  cli_util: ^0.4.2
   dotenv: ^4.2.0
-  google_gemini: ^0.1.2
-  # path: ^1.8.0
+  google_generative_ai:
+    git:
+      url: https://github.com/franci3/deprecated-generative-ai-dart.git
+      ref: main
+      path: pkgs/google_generative_ai
+  mime: ^2.0.0
+  path: ^1.9.1
 
 dev_dependencies:
-  lints: ^3.0.0
-  test: ^1.24.0
+  lints: ^6.0.0
+  test: ^1.26.2
