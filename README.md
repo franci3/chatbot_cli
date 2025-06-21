@@ -19,8 +19,8 @@ This tool uses `bat` to provide nicely formatted Markdown output directly in you
 ## Setup
 
 1.  **Clone the Repository (if you haven't already)**
-2.  **Add a `.env` file with the previously obtained `API-KEY` for using Google AI Studio.**
-3.  **Build the dart program via `dart compile exe bin/chatbot_cli.dart -o chatbot.exe --target-os macos`**
+2.  **Get your api key for using Google AI Studio.**
+3.  **Build the dart program via `dart compile exe bin/chatbot_cli.dart -o chatbot.exe --target-os macos --define=API_KEY={YOUR_API_KEY} --define=TMP_FILE_PATH={PATH_TO_DIRECTORY_TO_SAVE_RESPONSES}`**
    4. **NOTE:** Adjust the target os you're running on
 5.  **Then you can simply run the executable**
 

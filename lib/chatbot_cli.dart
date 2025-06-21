@@ -6,13 +6,10 @@ import 'package:args/args.dart';
 import 'package:chatbot_cli/chatbot_cli_arguments.dart';
 import 'package:chatbot_cli/chatbot_cli_models.dart';
 import 'package:cli_util/cli_logging.dart';
-import 'package:dotenv/dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:mime/mime.dart';
-import 'package:path/path.dart' as path;
 
 final logger = Logger.standard();
-
 void validateArguments(ArgResults argResult) {
   if (!argResult.options.contains(input)) {
     logger.stderr('input is mandatory');
@@ -26,13 +23,24 @@ void validateArguments(ArgResults argResult) {
   }
 }
 
-String _loadApiKey() {
-  final envFile = DotEnv(includePlatformEnvironment: true)..load();
-  if (envFile['API_KEY'] == null) {
-    logger.stderr('No .env file with API_KEY provided');
+String _getApiKey() {
+  const apiKey = String.fromEnvironment('API_KEY');
+
+  if (apiKey.isEmpty) {
+    logger.stderr('No API_KEY provided in --define');
     exit(1);
   }
-  return envFile['API_KEY']!;
+  return apiKey;
+}
+
+String _getTemporaryFilePath() {
+  const filePath = String.fromEnvironment('TMP_FILE_PATH');
+
+  if (filePath.isEmpty) {
+    logger.stderr('No TMP_FILE_PATH provided with --define');
+    exit(1);
+  }
+  return filePath;
 }
 
 Future<void> generateResponse(ArgResults argResults) async {
@@ -43,7 +51,7 @@ Future<void> generateResponse(ArgResults argResults) async {
 
   logger.write('\n');
   final GenerativeModel model = GenerativeModel(
-      model: ChatbotCliModels.gemini25flash.modelName, apiKey: _loadApiKey());
+      model: ChatbotCliModels.gemini25flash.modelName, apiKey: _getApiKey());
   if (startChat) {
     if (filePath != null) {
       logger.stderr('Files are not yet supported when chatting');
@@ -122,11 +130,10 @@ Future<void> _createOutput(GenerateContentResponse response,
 
 Future<String> _writeToTemporaryFile(GenerateContentResponse response) async {
   final timestamp = DateTime.now();
-  final tmpFilePath =
-      path.join('lib', 'tmp', '${timestamp.toIso8601String()}_tmp.md');
-  final tmpFile = File(tmpFilePath);
+  final tmpFilePath = _getTemporaryFilePath();
+  final tmpFile = File('$tmpFilePath/${timestamp.toIso8601String()}_tmp.md');
   await tmpFile.writeAsString(response.text!);
-  return tmpFilePath;
+  return tmpFile.path;
 }
 
 Future<void> _deleteFile(String path) async {
